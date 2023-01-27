@@ -5,7 +5,8 @@ import { WORDS } from '../../data';
 import { checkGuess } from '../../game-helpers';
 import GuessInput from '../GuessInput';
 import GuessResults from '../GuessResults';
-import GameOverBanner from '../GameOverBanner';
+import WonBanner from '../WonBanner';
+import LostBanner from '../LostBanner';
 import GameKeyboard from '../GameKeyboard';
 
 function Game() {
@@ -22,9 +23,9 @@ function Game() {
     setGuesses(nextGuesses);
 
     if (guessResults.every((res) => res.status === 'correct')) {
-      setGame({ status: 'happy', numGuesses: nextGuesses.length });
+      setGame({ status: 'won', numGuesses: nextGuesses.length });
     } else if (nextGuesses.length >= 6) {
-      setGame({ status: 'sad', numGuesses: nextGuesses.length });
+      setGame({ status: 'lost', numGuesses: nextGuesses.length });
     }
   }
 
@@ -39,11 +40,15 @@ function Game() {
       <GuessResults guesses={guesses} />
       <GuessInput handleNewGuess={handleNewGuess} disabled={!!game.status} />
       <GameKeyboard guesses={guesses} />
-      {game.status && (
-        <GameOverBanner
-          variant={game.status}
-          answer={answer}
+      {game.status === 'won' && (
+        <WonBanner
           numGuesses={game.numGuesses}
+          handleRestartGame={handleRestartGame}
+        />
+      )}
+      {game.status === 'lost' && (
+        <LostBanner
+          answer={answer}
           handleRestartGame={handleRestartGame}
         />
       )}
